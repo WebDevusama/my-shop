@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
 .navbar {
   display: flex;
   align-items: center;
@@ -56,6 +55,7 @@
 .navbar-right {
   display: flex;
   gap: 25px;
+  margin-right: auto;
 }
 
 .nav-item {
