@@ -1,4 +1,4 @@
-import FilterSidebar from "./FilterSidebar";
+import FilterSidebar from "../components/ui/FilterSidebar";
 import ProductCard from "./PhonesCard";
 
 const products = Array.from({ length: 6 }).map((_, i) => ({

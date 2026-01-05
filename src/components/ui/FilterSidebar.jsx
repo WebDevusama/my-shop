@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./Sidebar.css"; // ✅ Correct CSS import
 
 const categories = [
   "Mobile accessory",
@@ -17,7 +18,7 @@ export default function FilterSidebar({ onFilter }) {
     brands: [],
     min: "",
     max: "",
-    rating: "",
+    rating: null,
   });
 
   const toggleBrand = (brand) => {
@@ -44,7 +45,7 @@ export default function FilterSidebar({ onFilter }) {
         Filters
       </button>
 
-      {/* Overlay (Mobile) */}
+      {/* Overlay */}
       {open && (
         <div
           className="fixed inset-0 bg-black/40 z-30 lg:hidden"
@@ -58,7 +59,6 @@ export default function FilterSidebar({ onFilter }) {
         ${open ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0`}
       >
-
         {/* Category */}
         <div>
           <h4 className="font-semibold mb-2">Category</h4>
@@ -66,9 +66,7 @@ export default function FilterSidebar({ onFilter }) {
             {categories.map((c) => (
               <li
                 key={c}
-                onClick={() =>
-                  setFilters((f) => ({ ...f, category: c }))
-                }
+                onClick={() => setFilters((f) => ({ ...f, category: c }))}
                 className={`cursor-pointer ${
                   filters.category === c
                     ? "text-blue-600 font-medium"
@@ -128,9 +126,7 @@ export default function FilterSidebar({ onFilter }) {
                 type="radio"
                 name="rating"
                 checked={filters.rating === r}
-                onChange={() =>
-                  setFilters({ ...filters, rating: r })
-                }
+                onChange={() => setFilters({ ...filters, rating: r })}
               />
               ⭐ {r} & up
             </label>
@@ -147,7 +143,7 @@ export default function FilterSidebar({ onFilter }) {
                 brands: [],
                 min: "",
                 max: "",
-                rating: "",
+                rating: null,
               })
             }
           >

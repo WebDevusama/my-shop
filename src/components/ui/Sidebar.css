@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+.sidebar{
+margin-left: 0%;
+margin-top: 20px;
+
+
+}
