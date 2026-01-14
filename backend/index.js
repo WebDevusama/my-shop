@@ -6,6 +6,43 @@ const app = express();
 const UserSchema = new mongoose.Schema({ name: String, email: String });
 module.exports = mongoose.model("User", UserSchema);
 const User = require("./Users-module/users-module");
+const EmployeeModel = require("./Users-module/Employee")
+
+app.use(express.json())
+app.use(cors())
+
+
+app.post("/login", (req, res) => {
+    const {email, password} = req.body;
+    EmployeeModel.findOne({email : email})
+    .then(user => {
+        if(user) {
+            if(user.password === password){
+                res.json("Success")
+            }else{
+                res.json("The password is incorrect")
+            }
+        }else{
+            res.json("No record existed")
+        }
+    })
+})
+
+app.post("/register", (req, res) => {
+    EmployeeModel.create(req.body)
+    .then(employees => res.json(employees))
+    .catch(err => res.json(err))
+})
+
+
+
+
+
+
+
+
+
+
 
 app.get("/users", async (req, res) => {
     const users = await User.find();

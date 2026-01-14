@@ -1,11 +1,12 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-
+import Signup from '../pages/Signup';
 import Home from "../pages/Home";
 import Products from "../pages/ProductPage";
 import Profile from "../pages/Profile";
 import Login from "../pages/Login";
 import Dashboard from "../components/ui/Dashborad";
 import Cart from "../pages/Cart";
+// import 'bootstrap/dist/css/bootstrap.min.css'
 
 export default function AppRoutes() {
   const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
@@ -19,6 +20,7 @@ export default function AppRoutes() {
           <Route path="/products" element={<Products />} />
           <Route path="/login" element={<Login />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path='/register' element={<Signup/>}/>
 
           {/* Protected Routes */}
           <Route

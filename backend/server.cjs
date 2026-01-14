@@ -1,5 +1,8 @@
 // Import & enable dotenv in the file:
 require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
+dotenv.config({ path: "./env/" });
 
 // Express app:
 const express = require("express");
