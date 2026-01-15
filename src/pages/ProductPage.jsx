@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import FilterSidebar from "../components/ui/FilterSidebar";
-import ProductCard from "../pages/PhonesCard";
+import ProductCard from "./PhonesCard";
 import { useCart } from "../CartContext";
 
 export default function ProductPage() {

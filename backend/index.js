@@ -1,66 +1,64 @@
 require("dotenv").config();
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const app = express();
-const UserSchema = new mongoose.Schema({ name: String, email: String });
-module.exports = mongoose.model("User", UserSchema);
+
 const User = require("./Users-module/users-module");
-const EmployeeModel = require("./Users-module/Employee")
+const EmployeeModel = require("./Users-module/Employee");
 
-app.use(express.json())
-app.use(cors())
+const app = express();
 
+// Middleware
+app.use(cors());
+app.use(express.json());
 
-app.post("/login", (req, res) => {
-    const {email, password} = req.body;
-    EmployeeModel.findOne({email : email})
-    .then(user => {
-        if(user) {
-            if(user.password === password){
-                res.json("Success")
-            }else{
-                res.json("The password is incorrect")
-            }
-        }else{
-            res.json("No record existed")
-        }
-    })
-})
+// Debug env (TEMP – remove later)
+console.log("MONGO_URI:", process.env.MONGO_URI);
 
-app.post("/register", (req, res) => {
-    EmployeeModel.create(req.body)
-    .then(employees => res.json(employees))
-    .catch(err => res.json(err))
-})
+// Auth routes
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
 
+  const user = await EmployeeModel.findOne({ email });
+  if (!user) return res.json("No record existed");
 
+  if (user.password !== password)
+    return res.json("The password is incorrect");
 
+  res.json("Success");
+});
 
+app.post("/register", async (req, res) => {
+  try {
+    const employee = await EmployeeModel.create(req.body);
+    res.json(employee);
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+});
 
-
-
-
-
-
-
+// User routes
 app.get("/users", async (req, res) => {
-    const users = await User.find();
-    res.json(users);
+  const users = await User.find();
+  res.json(users);
 });
 
 app.post("/users", async (req, res) => {
-    const newUser = new User(req.body);
-    await newUser.save();
-    res.json(newUser);
+  const newUser = await User.create(req.body);
+  res.json(newUser);
 });
 
-app.use(cors()); // Enable CORS
-app.use(express.json()); // Parse JSON requests
+// MongoDB connection
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("✅ Connected to MongoDB");
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log("Connected to MongoDB"))
-    .catch(err => console.error(err));
-
-app.listen(5000, () => console.log("Server running on port 5000"));
+    app.listen(process.env.PORT, () =>
+      console.log(`🚀 Server running on port ${process.env.PORT}`)
+    );
+  })
+  .catch((err) => console.error("❌ Mongo error:", err.message));
