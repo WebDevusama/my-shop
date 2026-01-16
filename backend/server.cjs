@@ -1,45 +1,77 @@
-// Load env FIRST (line 1)
+// =======================
+// Load ENV (FIRST LINE)
+// =======================
 require("dotenv").config();
 
-// Express
+// =======================
+// Imports
+// =======================
 const express = require("express");
+const mongoose = require("mongoose");
+const Stripe = require("stripe");
+const cors = require("cors");
+
+// =======================
+// App Init
+// =======================
 const app = express();
 
-// Mongoose
-const mongoose = require("mongoose");
-
-// CORS
-const cors = require("cors");
+// =======================
+// Middleware
+// =======================
 app.use(cors());
 
-// Routes
-const userRoutes = require("./Users-module/users-module");
-const eventRoutes = require("./Users-module/Employee");
+// Stripe webhook needs RAW body
+app.use("/webhook", express.raw({ type: "application/json" }));
 
-// Middleware
+// Normal JSON for rest
 app.use(express.json());
 
 app.use((req, res, next) => {
-  console.log(req.path, req.method);
+  console.log(req.method, req.path);
   next();
 });
 
+// =======================
+// Stripe Init
+// =======================
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+// =======================
 // Routes
-app.use("/palz/users", userRoutes);
+// =======================
+app.use("/admin", require("./routes/adminOrders"));
+app.use("/", require("./routes/BillGenerator"));
+app.use("/palz/users", require("./Users-module/users-module"));
+app.use("/", require("./routes/invoice"));
 
-// DEBUG (VERY IMPORTANT)
-console.log("MONGO_URI:", process.env.MONGO_URI);
+const Order = require("./models/Order");
 
-// MongoDB connection
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    app.listen(process.env.PORT || 5000, () => {
-      console.log(
-        `✅ Connected to MongoDB & listening on port ${process.env.PORT}`
-      );
+app.post("/create-checkout-session", async (req, res) => {
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price: "price_XXXXXXXX",
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: "http://localhost:5173/success?session_id={CHECKOUT_SESSION_ID}",
+      cancel_url: "http://localhost:5173/cancel",
     });
-  })
-  .catch((error) => {
-    console.error("❌ MongoDB connection failed:", error.message);
-  });
+
+    // Save order as PENDING
+    await Order.create({
+      stripeSessionId: session.id,
+      amount: session.amount_total || 0,
+      currency: session.currency,
+      status: "pending",
+    });
+
+    res.json({ url: session.url });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});

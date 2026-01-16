@@ -15,8 +15,9 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "mongodb": "^7.0.0",
-    "mongoose": "^9.1.2"
+    "mongoose": "^9.1.2",
+    "pdfkit": "^0.17.2",
+    "stripe": "^20.1.2"
   },
-  "devDependencies": {},
   "description": ""
 }

@@ -72,7 +72,7 @@ const Navbar = () => {
  <div className="nav-item">
       <FaShoppingCart className="icon" />
 
-      <button onClick={() => navigate("/Cart")}>
+      <button onClick={() => navigate("/Login")} className="cart-btn">
         <span>Cart</span>
 
       </button>

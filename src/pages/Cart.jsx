@@ -36,7 +36,7 @@ const Cart = () => {
                   </Col>
 
                   <Col md={2}>
-                    <Button type="button" variant="light">
+                    <Button onClick={() => navigate("/Login  ")} type="button" variant="light">
                       ❌
                     </Button>
                   </Col>
@@ -61,7 +61,7 @@ const Cart = () => {
             </ListGroup.Item>
 
             <ListGroup.Item>
-              <Button className="w-100" disabled={cartItems.length === 0}>
+              <Button onClick={() => navigate("/checkout")} className="w-100" disabled={cartItems.length === 0}>
                 Proceed To Checkout
               </Button>
             </ListGroup.Item>
