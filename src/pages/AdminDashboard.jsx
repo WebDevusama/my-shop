@@ -41,7 +41,7 @@ export default function AdminDashboard() {
               <td>${order.amount / 100}</td>
               <td>
                 <a
-                  href={`http://localhost:4242/invoice/${order._id}`}
+                  href={`http://localhost:5000/invoice/${order._id}`}
                   target="_blank"
                 >
                   Download

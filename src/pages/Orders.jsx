@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Orders() {
   const handleCheckout = async () => {
-    const res = await fetch("http://localhost:4242/create-checkout-session", {
+    const res = await fetch("http://localhost:5000/create-checkout-session", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

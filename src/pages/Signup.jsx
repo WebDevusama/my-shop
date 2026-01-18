@@ -68,7 +68,7 @@ function Signup() {
             />
           </div>
 
-          <button className="btn btn-success w-100 rounded-0">
+          <button  className="btn btn-success w-100 rounded-0">
             Sign Up
           </button>
         </form>

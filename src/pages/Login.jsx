@@ -61,7 +61,7 @@ function Login() {
             />
           </div>
 
-          <button className="btn btn-success w-100 rounded-0">
+          <button onClick={() => navigate("/profile")} className="btn btn-success w-100 rounded-0">
             Login
           </button>
         </form>

@@ -1,11 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Row, Col, ListGroup, Image, Button, Card } from "react-bootstrap";
-//  import Message from "../components/Message";
+  import Message from "../pages/Message";
 import { useCart } from "../CartContext";
-
+import { useNavigate } from "react-router-dom";
 const Cart = () => {
   const { cartItems } = useCart();
+  const navigate = useNavigate();
   
   return (
     <Row>
@@ -16,7 +17,8 @@ const Cart = () => {
           <Message>
             Your cart is empty <Link to="/">Go Back</Link>
           </Message>
-        ) : (
+        ) 
+        : (
           <ListGroup variant="flush">
             {cartItems.map((item) => (
               <ListGroup.Item key={item.id}>
@@ -36,7 +38,7 @@ const Cart = () => {
                   </Col>
 
                   <Col md={2}>
-                    <Button onClick={() => navigate("/Login  ")} type="button" variant="light">
+                    <Button onClick={() => navigate("/Emptycart")} type="button" variant="light">
                       ❌
                     </Button>
                   </Col>
