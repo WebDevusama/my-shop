@@ -7,11 +7,15 @@
 .navbar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 32px;
   padding: 12px 32px;
   background-color: white;
   border-bottom: 1px solid #e5e7eb;
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  flex-wrap: wrap;
 }
 
 /* Dark mode */
@@ -149,39 +153,143 @@ body.dark .nav-item.cart {
 
 /* Mobile menu toggle */
 .mobile-menu-toggle {
-  display: none;
+  display: none !important;
+  margin-left: auto;
+  font-weight: 600;
+}
+
+.mobile-menu-toggle span {
+  margin-top: 4px;
 }
 
 /* Mobile Menu */
 .mobile-menu {
   display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border-bottom: 1px solid #e5e7eb;
+  z-index: 1000;
+  padding: 12px 16px;
+  gap: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-menu.active {
+  display: flex;
+}
+
+body.dark .mobile-menu {
+  background-color: #1f2937;
+  border-bottom-color: #374151;
+}
+
+.mobile-menu .nav-item {
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 12px;
+  font-size: 13px;
+  padding: 8px 0;
+}
+
+.mobile-menu .nav-item:hover {
+  background-color: #f3f4f6;
+  padding-left: 8px;
+  border-radius: 4px;
+}
+
+body.dark .mobile-menu .nav-item:hover {
+  background-color: #374151;
 }
 
 /* =======================
    RESPONSIVE
 ======================= */
-@media (max-width: 1024px) {
+@media (max-width: 1280px) {
+  .navbar {
+    gap: 16px;
+    padding: 12px 24px;
+  }
+
   .navbar-center {
-    max-width: 450px;
+    max-width: 400px;
+  }
+
+  .search-input,
+  .category-select {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .nav-item {
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .nav-item .icon {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .navbar {
+    gap: 12px;
+    padding: 10px 20px;
+  }
+
+  .navbar-center {
+    max-width: 350px;
+  }
+
+  .navbar-right {
+    gap: 16px;
+  }
+
+  .nav-item {
+    font-size: 10px;
+  }
+
+  .nav-item .icon {
+    font-size: 16px;
   }
 }
 
 @media (max-width: 768px) {
   .navbar {
-    flex-wrap: wrap;
-    gap: 16px;
-    padding: 12px 16px;
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: 10px 16px;
+  }
+
+  .navbar-left {
+    flex-shrink: 0;
+  }
+
+  .brand {
+    font-size: 18px;
   }
 
   .navbar-center {
+    flex: 1;
+    max-width: 100%;
     order: 3;
     width: 100%;
-    max-width: 100%;
-    margin-top: 12px;
+    margin-top: 8px;
+  }
+
+  .search-input,
+  .category-select,
+  .search-btn {
+    font-size: 12px;
+    padding: 8px 10px;
   }
 
   .navbar-right {
-    gap: 12px;
+    gap: 8px;
+    margin-left: auto;
   }
 
   .nav-item:not(.cart):not(.mobile-menu-toggle) {
@@ -189,33 +297,70 @@ body.dark .nav-item.cart {
   }
 
   .mobile-menu-toggle {
-    display: flex;
+    display: flex !important;
+    margin-left: 8px;
+  }
+
+  .nav-item.cart {
+    font-size: 10px;
+  }
+
+  .nav-item .icon {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    flex-wrap: nowrap;
+    gap: 4px;
+    padding: 8px 12px;
+  }
+
+  .brand {
+    font-size: 16px;
+    white-space: nowrap;
+  }
+
+  .navbar-center {
+    display: none;
+  }
+
+  .navbar-right {
+    gap: 4px;
+  }
+
+  .mobile-menu-toggle {
+    display: flex !important;
+    font-size: 0;
+  }
+
+  .mobile-menu-toggle span {
+    display: none;
+  }
+
+  .mobile-menu-toggle .icon {
+    font-size: 20px;
+  }
+
+  .nav-item.cart {
+    font-size: 0;
+  }
+
+  .nav-item.cart span {
+    display: none;
+  }
+
+  .nav-item.cart .icon {
+    font-size: 18px;
   }
 
   .mobile-menu {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background-color: white;
-    border: 1px solid #e5e7eb;
-    border-top: none;
-    z-index: 1000;
-    padding: 16px;
-    gap: 16px;
-  }
-
-  body.dark .mobile-menu {
-    background-color: #1f2937;
-    border-color: #374151;
+    min-width: 100%;
   }
 
   .mobile-menu .nav-item {
-    flex-direction: row;
-    justify-content: flex-start;
-    gap: 12px;
-    font-size: 14px;
+    font-size: 13px;
+    padding: 10px 0;
   }
 }

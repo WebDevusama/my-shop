@@ -17,7 +17,7 @@ export default function EmptyCart() {
       </p>
 
       <Button asChild size="lg" className="group">
-        <Link to="/PhonesCard">
+        <Link to="/ProductPage">
           Continue Shopping
           <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Link>

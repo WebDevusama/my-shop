@@ -8,6 +8,7 @@ const cors = require("cors");
 
 const User = require("./Users-module/users-module");
 const EmployeeModel = require("./Users-module/Employee");
+const cartRoutes = require("./routes/cart");
 
 const app = express();
 
@@ -50,6 +51,9 @@ app.post("/users", async (req, res) => {
   const newUser = await User.create(req.body);
   res.json(newUser);
 });
+
+// Cart routes
+app.use("/api/cart", cartRoutes);
 
 // MongoDB connection
 mongoose

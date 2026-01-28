@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import {
+  fetchCart,
+  addItemToCart,
+  removeItemFromCart,
+  updateItemQuantity,
+  clearCartAPI,
+} from "./api/cartApi";
 
 /* =======================
    TYPES
@@ -20,6 +27,7 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  isLoading: boolean;
 }
 
 interface CartProviderProps {
@@ -46,45 +54,108 @@ export const useCart = (): CartContextType => {
 
 export const CartProvider = ({ children }: CartProviderProps) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Load cart from database on mount
+  useEffect(() => {
+    loadCart();
+  }, []);
+
+  // Load cart from API
+  const loadCart = async () => {
+    setIsLoading(true);
+    try {
+      const data = await fetchCart();
+      setCartItems(data.items || []);
+    } catch (err) {
+      console.error("Failed to load cart:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // ✅ ADD TO CART
-  const addToCart = (product: CartItem) => {
-    setCartItems((prev) => {
-      const existing = prev.find((item) => item.id === product.id);
-
-      if (existing) {
-        return prev.map((item) =>
-          item.id === product.id
-            ? { ...item, qty: item.qty + (product.qty || 1) }
-            : item
-        );
-      }
-
-      return [...prev, { ...product, qty: product.qty || 1 }];
-    });
+  const addToCart = async (product: CartItem) => {
+    try {
+      setIsLoading(true);
+      const updatedCart = await addItemToCart({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        image: product.image,
+        qty: product.qty || 1,
+      });
+      setCartItems(updatedCart.items || []);
+    } catch (err) {
+      console.error("Failed to add to cart:", err);
+      // Fallback to local state if API fails
+      setCartItems((prev) => {
+        const existing = prev.find((item) => item.id === product.id);
+        if (existing) {
+          return prev.map((item) =>
+            item.id === product.id
+              ? { ...item, qty: item.qty + (product.qty || 1) }
+              : item
+          );
+        }
+        return [...prev, { ...product, qty: product.qty || 1 }];
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // ✅ REMOVE ITEM
-  const removeFromCart = (id: number) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  const removeFromCart = async (id: number) => {
+    try {
+      setIsLoading(true);
+      const updatedCart = await removeItemFromCart(id);
+      setCartItems(updatedCart.items || []);
+    } catch (err) {
+      console.error("Failed to remove from cart:", err);
+      // Fallback to local state if API fails
+      setCartItems((prev) => prev.filter((item) => item.id !== id));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // ✅ UPDATE QUANTITY
-  const updateQuantity = (id: number, qty: number) => {
+  const updateQuantity = async (id: number, qty: number) => {
     if (qty <= 0) {
       removeFromCart(id);
       return;
     }
 
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, qty } : item
-      )
-    );
+    try {
+      setIsLoading(true);
+      const updatedCart = await updateItemQuantity(id, qty);
+      setCartItems(updatedCart.items || []);
+    } catch (err) {
+      console.error("Failed to update quantity:", err);
+      // Fallback to local state if API fails
+      setCartItems((prev) =>
+        prev.map((item) => (item.id === id ? { ...item, qty } : item))
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // ✅ CLEAR CART
-  const clearCart = () => setCartItems([]);
+  const clearCart = async () => {
+    try {
+      setIsLoading(true);
+      await clearCartAPI();
+      setCartItems([]);
+    } catch (err) {
+      console.error("Failed to clear cart:", err);
+      // Fallback to local state if API fails
+      setCartItems([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // ✅ TOTALS
   const totalItems = cartItems.reduce((acc, item) => acc + item.qty, 0);
@@ -103,6 +174,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         clearCart,
         totalItems,
         totalPrice,
+        isLoading,
       }}
     >
       {children}

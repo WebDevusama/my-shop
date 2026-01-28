@@ -138,7 +138,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="mobile-menu">
+        <div className="mobile-menu active">
           <div className="nav-item" onClick={() => { navigate("/notifications"); setIsMenuOpen(false); }}>
             <FaBell className="icon" />
             <span>Notifications</span>
@@ -162,6 +162,10 @@ const Navbar = () => {
           <div className="nav-item" onClick={() => { navigate("/payments"); setIsMenuOpen(false); }}>
             <FaCreditCard className="icon" />
             <span>Payments</span>
+          </div>
+          <div className="nav-item" onClick={() => { navigate("/cart"); setIsMenuOpen(false); }}>
+            <FaShoppingCart className="icon" />
+            <span>Cart</span>
           </div>
         </div>
       )}
